@@ -3,8 +3,10 @@
 {% block title %} Toutes les recettes {% endblock %}
 {% block body %}
     <ul>
-        <li>
-            <a href="{{ url('recipe.show', {id: 32, slug: 'pate-bolognaise'}) }}"> Pâte bolognaise</a>
-        </li>
+        {% for recipe in recipes %}
+            <li>
+                <a href="{{ url('recipe.show', {id: recipe.id, slug: recipe.slug}) }}">{{ recipe.getTitle() }}</a>
+            </li>
+        {% endfor %}
     </ul>
 {% endblock %}
