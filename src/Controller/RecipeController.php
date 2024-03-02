@@ -53,7 +53,7 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Route('/recette/{id}/edit', name: 'recipe.edit', requirements: ['id' => '\d+'])]
+    #[Route('/recette/{id}/edit', name: 'recipe.edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Recipe $recipe, Request $request, EntityManagerInterface $em) {
         $editForm = $this->createForm(RecipeType::class, $recipe);
         $editForm->handleRequest($request);
@@ -85,6 +85,14 @@ class RecipeController extends AbstractController
         return $this->render('recipe/create.html.twig', [
             'addForm' => $addForm 
         ]);
+    }
+    	
+    #[Route('/recette/{id}/delete', name: 'recipe.delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
+    public function delete(Recipe $recipe, EntityManagerInterface $em) {
+        $em->remove($recipe);
+        $em->flush();
+        $this->addFlash('succes', 'La recette a bien été supprimée');
+        return $this->redirectToRoute('recipe.index');
     }
 
 }
