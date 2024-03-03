@@ -18,11 +18,15 @@ class RecipeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
-            ->add('slug', TextType::class, [
-                'required' => false,
+            ->add('title', TextType::class, [
+                'empty_data' => ''
             ])
-            ->add('content')
+            ->add('slug', TextType::class, [
+                'required' => false
+            ])
+            ->add('content', TextType::class, [
+                'empty_data'
+            ])
             ->add('duration')
             ->add('save', SubmitType::class, [
                 'label' => 'Modifier'
@@ -46,6 +50,7 @@ class RecipeType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Recipe::class,
+            'validation_groups' => ['Default', 'Extra']
         ]);
     }
 
