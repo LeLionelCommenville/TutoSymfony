@@ -71,12 +71,10 @@ class RecipeController extends AbstractController
     #[Route('/recette/create', name:'recipe.create')]
     public function create(Request $request, EntityManagerInterface $em) {
         $recipe = new Recipe();
-        $addForm = $this->createForm(RecipeType::class);
+        $addForm = $this->createForm(RecipeType::class, $recipe);
         $addForm->handleRequest($request);
         if($addForm->isSubmitted() && $addForm->isValid()) 
         {
-            $recipe->setCreatedAt(new \DateTimeImmutable());
-            $recipe->setUpdatedAt(new \DateTimeImmutable());
             $em->persist($recipe);
             $em->flush();
             $this->addFlash('success', 'La recette a bien été ajoutée');
