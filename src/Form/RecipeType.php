@@ -25,7 +25,7 @@ class RecipeType extends AbstractType
                 'required' => false
             ])
             ->add('content', TextType::class, [
-                'empty_data'
+                'empty_data' => ''
             ])
             ->add('duration')
             ->add('save', SubmitType::class, [
