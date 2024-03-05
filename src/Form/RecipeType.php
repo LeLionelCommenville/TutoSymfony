@@ -15,6 +15,7 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 
 class RecipeType extends AbstractType
 {
+    public function __construct(private FormListenerFactory $factory) {}
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -31,19 +32,9 @@ class RecipeType extends AbstractType
             ->add('save', SubmitType::class, [
                 'label' => 'Modifier'
             ])
-            ->addEventListener(FormEvents::PRE_SUBMIT, $this->autoSlug(...))
-            ->addEventListener(FormEvents::POST_SUBMIT, $this->attachTimestamps(...))
+            ->addEventListener(FormEvents::PRE_SUBMIT, $this->factory->autoSlug('title'))
+            ->addEventListener(FormEvents::POST_SUBMIT, $this->factory->timestamps())
         ;
-    }
-
-    public function autoSlug(PreSubmitEvent $event): void
-    {
-        $data = $event->getData();
-        if(empty($data['slug'])) {
-            $slugger = new AsciiSlugger();
-            $data['slug'] = strtolower($slugger->slug($data['title']));
-            $event->setData($data);
-        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -52,17 +43,5 @@ class RecipeType extends AbstractType
             'data_class' => Recipe::class,
             'validation_groups' => ['Default', 'Extra']
         ]);
-    }
-
-    public function attachTimestamps(PostSubmitEvent $event): void
-    {
-        $data = $event->getData();
-        if(!($data instanceof Recipe)) {
-            return;
-        }
-        $data->setUpdatedAt(new \DateTimeImmutable());
-        if(!$data->getId()) {
-            $data->setCreatedAt(new \DateTimeImmutable());
-        }
     }
 }
