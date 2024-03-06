@@ -28,9 +28,11 @@ class RecipeRepository extends ServiceEntityRepository
     public function findWithDurationLowerThan(int $duration): array
     {
         return $this->createQueryBuilder('r')
+            ->select('r', 'c')
             ->where('r.duration < :duration')
             ->orderBy('r.duration', 'ASC')
-            ->setMaxResults(10)
+            ->leftJoin('r.category', 'c')
+            ->setMaxResults(20)
             ->setParameter('duration', $duration)
             ->getQuery()
             ->getResult();

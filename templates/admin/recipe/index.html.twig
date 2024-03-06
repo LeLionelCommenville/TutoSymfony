@@ -7,6 +7,7 @@
         <thead>
             <tr>
                 <th>Titre</th>
+                <th>Catégorie</th>
                 <th>Acions</th>
             </tr>
         </thead>
@@ -19,6 +20,7 @@
                             {{ recipe.getTitle() }}
                         </a>
                     </td>
+                    <td>{{ recipe.category.name | default('lol') }}</td>
                     <td>
                         <div class="d-flex gap-1">
                             <a class="btn btn-primary btn-sm" 
