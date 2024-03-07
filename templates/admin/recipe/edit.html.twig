@@ -3,6 +3,7 @@
 {% block title "Recette : " ~ recipe.title  %} 
 {% block body %}
     <h1>{{ recipe.title }}</h1>
+        <img src="{{ vich_uploader_asset(recipe, 'thumbnailFile') }}" alt="">
     {{ form(editForm) }}
 
     {# {{ form_start(editForm) }}

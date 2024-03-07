@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Recipe;
 use App\Form\RecipeType;
+use App\Kernel;
 use App\Repository\CategoryRepository;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManager;
@@ -60,6 +61,10 @@ class RecipeController extends AbstractController
         $editForm = $this->createForm(RecipeType::class, $recipe);
         $editForm->handleRequest($request);
         if($editForm->isSubmitted() && $editForm->isValid()) {
+            // $file = $editForm->get('thumbnailFile')->getData();
+            // $fileName = $recipe->getId(). '.' . $file->getClientOriginalExtension();
+            // $file->move($this->getParameter('kernel.project_dir') . '/public/recettes/images', $fileName);
+            // $recipe->setThumbnail($fileName);
             $em->flush();            
             $this->addFlash('success', 'La recette a bien été modifiée');
             return $this->redirectToRoute('admin.recipe.index');
