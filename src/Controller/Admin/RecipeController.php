@@ -24,11 +24,16 @@ class RecipeController extends AbstractController
 {
 
     #[Route('/', name: 'index')]
-    public function index(Request $request, RecipeRepository $repository, CategoryRepository $category): Response
+    public function index(Request $request, RecipeRepository $repository): Response
     {
-        $recipes = $repository->findWithDurationLowerThan(20);
+        $page = $request->query->getInt('page', 1);
+        $limit = 2;
+        $recipes = $repository->paginateRecipes($page, $limit);
+        $maxPage = ceil($recipes->count() / $limit);
         return $this->render('admin/recipe/index.html.twig', [
             'recipes' => $recipes,
+            'maxPage' => $maxPage,
+            'page' => $page
         ]);
     }
 
