@@ -28,16 +28,16 @@ class Recipe
     #[ORM\Column(length: 255)]
     #[Assert\Length(min: 5, groups: ['Extra'])]
     #[BanWord(groups:['Extra'])]
-    #[AnnotationGroups(['recipes.index'])]
+    #[AnnotationGroups(['recipes.index', 'recipes.create'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Length(min: 5)]
     #[Assert\Regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', message: 'Slug invalide')]
-    #[AnnotationGroups(['recipes.index'])]
+    #[AnnotationGroups(['recipes.index', 'recipes.create'])]
     private ?string $slug = null;
 
-    #[AnnotationGroups(['recipes.show'])]
+    #[AnnotationGroups(['recipes.show', 'recipes.create'])]
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\Length(min: 5, max: 1500)]
     private ?string $content = null;
@@ -51,7 +51,7 @@ class Recipe
     #[ORM\Column(nullable: true)]
     #[Assert\Positive()]
     #[Assert\NotBlank()]
-    #[AnnotationGroups(['recipes.index'])]
+    #[AnnotationGroups(['recipes.index', 'recipes.create'])]
     private ?int $duration = null;
 
     #[ORM\ManyToOne(inversedBy: 'recipes', cascade: ['persist'])]
