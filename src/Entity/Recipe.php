@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups as AnnotationGroups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -21,18 +22,22 @@ class Recipe
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[AnnotationGroups(['recipes.index'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Length(min: 5, groups: ['Extra'])]
     #[BanWord(groups:['Extra'])]
+    #[AnnotationGroups(['recipes.index'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Length(min: 5)]
     #[Assert\Regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', message: 'Slug invalide')]
+    #[AnnotationGroups(['recipes.index'])]
     private ?string $slug = null;
 
+    #[AnnotationGroups(['recipes.show'])]
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\Length(min: 5, max: 1500)]
     private ?string $content = null;
@@ -46,9 +51,11 @@ class Recipe
     #[ORM\Column(nullable: true)]
     #[Assert\Positive()]
     #[Assert\NotBlank()]
+    #[AnnotationGroups(['recipes.index'])]
     private ?int $duration = null;
 
     #[ORM\ManyToOne(inversedBy: 'recipes', cascade: ['persist'])]
+    #[AnnotationGroups(['recipes.show'])]
     private ?Category $category = null;
 
     #[ORM\Column(length: 255, nullable: true)]
