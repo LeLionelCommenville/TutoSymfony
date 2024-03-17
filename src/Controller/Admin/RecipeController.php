@@ -7,10 +7,12 @@ use App\Form\RecipeType;
 use App\Kernel;
 use App\Repository\CategoryRepository;
 use App\Repository\RecipeRepository;
+use App\Security\Voter\RecipeVoter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,15 +21,18 @@ use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/recette', name: 'admin.recipe.')]
-#[IsGranted('ROLE_ADMIN')]
+// #[IsGranted('ROLE_ADMIN')]
 class RecipeController extends AbstractController
 {
 
     #[Route('/', name: 'index')]
-    public function index(Request $request, RecipeRepository $repository): Response
+    #[IsGranted(RecipeVoter::LIST)]
+    public function index(Request $request, RecipeRepository $repository, Security $security): Response
     {
         $page = $request->query->getInt('page', 1);
-        $recipes = $repository->paginateRecipes($page);
+        $userId = $security->getUser()->getId();
+        $canListAll = $security->isGranted(RecipeVoter::LIST_ALL);
+        $recipes = $repository->paginateRecipes($page, $canListAll ? null : $userId);
         return $this->render('admin/recipe/index.html.twig', [
             'recipes' => $recipes,
         ]);
@@ -60,6 +65,7 @@ class RecipeController extends AbstractController
     // }
 
     #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted(RecipeVoter::EDIT, subject: 'recipe')]
     public function edit(Recipe $recipe, Request $request, EntityManagerInterface $em) {
         $editForm = $this->createForm(RecipeType::class, $recipe);
         $editForm->handleRequest($request);
@@ -79,6 +85,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/create', name:'create')]
+    #[IsGranted(RecipeVoter::CREATE)]
     public function create(Request $request, EntityManagerInterface $em) {
         $recipe = new Recipe();
         $addForm = $this->createForm(RecipeType::class, $recipe);
