@@ -26,3 +26,7 @@
 ###< symfony/asset-mapper ###
 .env
 /public/images
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
